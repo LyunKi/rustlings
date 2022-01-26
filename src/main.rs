@@ -21,6 +21,7 @@ mod ui;
 
 mod exercise;
 mod run;
+mod trick;
 mod verify;
 
 // In sync with crate version

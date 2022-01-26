@@ -4,8 +4,7 @@
 // Additionally, upon implementing FromStr, you can use the `parse` method
 // on strings to generate an object of the implementor type.
 // You can read more about it at https://doc.rust-lang.org/std/str/trait.FromStr.html
-use std::num::ParseIntError;
-use std::str::FromStr;
+use std::{num::ParseIntError, str::FromStr};
 
 #[derive(Debug, PartialEq)]
 struct Person {
@@ -26,8 +25,6 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
-
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
 // 2. Split the given string on the commas present in it
@@ -41,6 +38,25 @@ enum ParsePersonError {
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        if s.is_empty() {
+            Err(ParsePersonError::Empty)
+        } else if let [name, age] = &s.split(",").collect::<Vec<&str>>()[..] {
+            match age.parse() {
+                Ok(age) => {
+                    if name.len() == 0 {
+                        Err(ParsePersonError::NoName)
+                    } else {
+                        Ok(Person {
+                            name: name.to_string(),
+                            age,
+                        })
+                    }
+                }
+                Err(err) => Err(ParsePersonError::ParseInt(err)),
+            }
+        } else {
+            Err(ParsePersonError::BadLen)
+        }
     }
 }
 
